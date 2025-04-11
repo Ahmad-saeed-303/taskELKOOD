@@ -61,7 +61,7 @@ const [userRole, setUserRole] = useState(null);
           <Button
             component={Link}
             to="/dashboard"
-            sx={{ color: colors.grey[100], textTransform: "none" }}
+            sx={{ color: colors.grey[100], textTransform: "none" ,fontSize:"15px"}}
           >
             Job Listings
           </Button>
@@ -72,14 +72,14 @@ const [userRole, setUserRole] = useState(null);
             <Button
               component={Link}
               to="/entity-dashboard"
-              sx={{ color: colors.grey[100], textTransform: "none" }}
+              sx={{ color: colors.grey[100], textTransform: "none",fontSize:"15px" }}
             >
               Manage Jobs
             </Button>
             <Button
               component={Link}
               to="/post-job"
-              sx={{ color: colors.grey[100], textTransform: "none" }}
+              sx={{ color: colors.grey[100], textTransform: "none",fontSize:"15px" }}
             >
               Post Job
             </Button>

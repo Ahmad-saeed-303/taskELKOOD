@@ -10,6 +10,8 @@ import {
   Tooltip,
   Paper,
   useTheme,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -21,6 +23,7 @@ const ApplyJob = () => {
   const navigate = useNavigate();
   const [cvFile, setCvFile] = useState(null);
   const theme = useTheme();
+  const [openSnackbar, setOpenSnackbar] = useState(false); 
 
   const handleFormSubmit = (values, { resetForm }) => {
     const jobs = JSON.parse(localStorage.getItem("jobListings")) || [];
@@ -40,14 +43,13 @@ const ApplyJob = () => {
     localStorage.setItem("jobListings", JSON.stringify(updatedJobs));
     resetForm();
     setCvFile(null);
-    navigate("/");
+    setOpenSnackbar(true); 
+    setTimeout(() => navigate("/dashboard"), 1000); 
   };
 
   return (
     <Fade in timeout={600}>
-      <Box m="100px" maxWidth="50%" mx="auto" 
-  left="30%"
-  >
+      <Box m="100px" maxWidth="50%" mx="auto">
         <Paper
           elevation={4}
           sx={{
@@ -156,6 +158,23 @@ const ApplyJob = () => {
             )}
           </Formik>
         </Paper>
+
+        {/* ✅ Snackbar Notification */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setOpenSnackbar(false)}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Application submitted successfully!
+          </Alert>
+        </Snackbar>
       </Box>
     </Fade>
   );

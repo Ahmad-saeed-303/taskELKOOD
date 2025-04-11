@@ -1,16 +1,24 @@
-import { useEffect } from "react";
-import { Box, Button, TextField, Typography ,  useTheme,
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useTheme,
+  Fade,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const PostJob = () => {
-    const theme = useTheme();
+  const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
+  const [openSnackbar, setOpenSnackbar] = useState(false); 
 
   useEffect(() => {
     const jobs = localStorage.getItem("jobListings");
@@ -29,34 +37,53 @@ const PostJob = () => {
     };
     localStorage.setItem("jobListings", JSON.stringify([...currentJobs, newJob]));
     resetForm();
-    navigate.push("/entity-dashboard");
+    setOpenSnackbar(true); 
+    setTimeout(() => navigate("/entity-dashboard"), 1000); 
   };
 
   return (
-    <Fade in timeout={600} >
+    <Fade in timeout={600}>
       <Box
         m="200px"
         maxWidth="50%"
-        left="30%"
         mx="auto"
         sx={{
           backgroundColor:
-          theme.palette.mode === "dark"
-            ? "rgba(255,255,255,0.04)"
-            : "rgba(255,255,255,0.7)",
-        backdropFilter: "blur(10px)",
+            theme.palette.mode === "dark"
+              ? "rgba(255,255,255,0.04)"
+              : "rgba(255,255,255,0.7)",
+          backdropFilter: "blur(10px)",
           borderRadius: "12px",
           boxShadow: 4,
-          p:3,
+          p: 3,
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ textAlign: "center", fontWeight: 600 }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ textAlign: "center", fontWeight: 600 }}
+        >
           Post a New Job
         </Typography>
-        <Formik initialValues={initialValues} validationSchema={jobSchema} onSubmit={handleFormSubmit}>
-          {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={jobSchema}
+          onSubmit={handleFormSubmit}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+          }) => (
             <form onSubmit={handleSubmit}>
-              <Box display="grid" gap="20px" gridTemplateColumns={isNonMobile ? "1fr 1fr" : "1fr"}>
+              <Box
+                display="grid"
+                gap="20px"
+                gridTemplateColumns={isNonMobile ? "1fr 1fr" : "1fr"}
+              >
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -107,27 +134,50 @@ const PostJob = () => {
                 />
               </Box>
               <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" variant="contained" color="primary"
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
                   sx={{
                     mb: 3,
                     px: 3,
                     py: 1.2,
                     borderRadius: "12px",
                     fontWeight: 600,
-                    backgroundColor: theme.palette.mode === "dark" ? "#90caf9" : "#1976d2",
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#90caf9" : "#1976d2",
                     color: "#fff",
                     boxShadow: 3,
                     textTransform: "none",
                     "&:hover": {
-                      backgroundColor: theme.palette.mode === "dark" ? "#64b5f6" : "#115293",
+                      backgroundColor:
+                        theme.palette.mode === "dark" ? "#64b5f6" : "#115293",
                     },
-                  }}>
+                  }}
+                >
                   Post Job
                 </Button>
               </Box>
             </form>
           )}
         </Formik>
+
+        {/* ✅ Snackbar Notification */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setOpenSnackbar(false)}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Job posted successfully!
+          </Alert>
+        </Snackbar>
       </Box>
     </Fade>
   );
@@ -146,6 +196,11 @@ const jobSchema = yup.object().shape({
     .min(10, "Description must be at least 10 characters"),
 });
 
-const initialValues = { title: "", hours: "", city: "", description: "" };
+const initialValues = {
+  title: "",
+  hours: "",
+  city: "",
+  description: "",
+};
 
 export default PostJob;

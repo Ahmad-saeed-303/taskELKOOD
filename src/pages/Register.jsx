@@ -10,6 +10,8 @@ import {
   Fade,
   Paper,
   useTheme,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "../theme";
@@ -18,33 +20,46 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("person");
+  const [snack, setSnack] = useState({ open: false, message: "", severity: "info" });
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleRegister = () => {
+    if (!name || !email) {
+      setSnack({ open: true, message: "Please fill in all fields.", severity: "warning" });
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setSnack({ open: true, message: "Please enter a valid email address.", severity: "error" });
+      return;
+    }
+
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const userExists = users.some((u) => u.email === email);
 
     if (userExists) {
-      alert("Email already registered. Please log in.");
-      navigate("/login");
+      setSnack({ open: true, message: "Email already registered. Redirecting to login...", severity: "info" });
+      setTimeout(() => navigate("/login"), 2000);
     } else {
       const user = { id: Date.now(), name, email, role };
       localStorage.setItem("users", JSON.stringify([...users, user]));
       localStorage.setItem("currentUser", JSON.stringify(user));
-      navigate(role === "person" ? "/" : "/entity-dashboard");
+      navigate(role === "person" ? "/dashboard" : "/entity-dashboard");
     }
   };
 
   return (
     <Fade in timeout={600}>
-      <Box
-        height="100vh"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
+      <Box height="100vh" 
+      display="flex" alignItems="center"
+       justifyContent="center">
         <Paper
           elevation={6}
           sx={{
@@ -103,6 +118,22 @@ const Register = () => {
             </Button>
           </Box>
         </Paper>
+
+        <Snackbar
+          open={snack.open}
+          autoHideDuration={3000}
+          onClose={() => setSnack({ ...snack, open: false })}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setSnack({ ...snack, open: false })}
+            severity={snack.severity}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {snack.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </Fade>
   );

@@ -18,10 +18,25 @@ const Login = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+  
   const handleLogin = () => {
+    if (!email) {
+      setError("Email is required.");
+      return;
+    }
+  
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+  
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const user = users.find((u) => u.email === email);
-
+  
     if (user) {
       localStorage.setItem("currentUser", JSON.stringify(user));
       navigate(user.role === "person" ? "/dashboard" : "/entity-dashboard");
@@ -29,6 +44,7 @@ const Login = () => {
       setError("User not found. Please register first.");
     }
   };
+  
 
   return (
     <Fade in timeout={600}>
