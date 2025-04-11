@@ -8,6 +8,7 @@ import {
   Button,
   Grid,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Zoom } from "@mui/material";
 import JobApplicationsDialog from "../components/JobApplicationsDialog";
@@ -16,6 +17,8 @@ const EntityDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   useEffect(() => {
     const storedJobs = JSON.parse(localStorage.getItem("jobListings")) || [];
@@ -23,16 +26,38 @@ const EntityDashboard = () => {
   }, []);
 
   return (
-    <Box m="100px">
-      <Typography variant="h4" gutterBottom  m="10px">
+    <Box
+      px={{ xs: 2, sm: 4, md: 8 }}
+      py={{ xs: 4, sm: 6, md: 8 }}
+      mt={{ xs: 12, sm: 10 , lg:10 }}
+      width="100%"
+    >
+      <Typography
+        variant="h4"
+        gutterBottom
+        textAlign="center"
+        fontSize={{ xs: "1.8rem", sm: "2.2rem" }}
+        mb={4}
+      >
         Your Posted Jobs
       </Typography>
+
       <Grid container spacing={3}>
         {jobs.map((job, index) => (
-          <Grid item xs={12} sm={6} md={4} key={job.id}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={job.id}
+            display="flex"
+            justifyContent="center"
+          >
             <Zoom in timeout={300 * (index + 1)}>
               <Card
                 sx={{
+                  width: "100%",
+                  maxWidth: 400,
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
@@ -52,35 +77,42 @@ const EntityDashboard = () => {
                   transition: "transform 0.3s",
                   "&:hover": {
                     transform: "translateY(-5px)",
-                    cursor:"pointer"
+                    cursor: "pointer",
                   },
                 }}
               >
                 <CardContent sx={{ flexGrow: 1 }}>
-  <Typography variant="h6" color="primary" fontWeight={600} fontSize={20}>
-    {job.title.length > 40 ? job.title.slice(0, 40) + "..." : job.title}
-  </Typography>
-  <Typography color="textSecondary">
-    Hours: {job.hours}
-  </Typography>
-  <Typography color="textSecondary">
-    City: {job.city}
-  </Typography>
-  <Typography
-    variant="body2"
-    mt={1}
-    sx={{
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      display: "-webkit-box",
-      WebkitLineClamp: 3,
-      WebkitBoxOrient: "vertical",
-      minHeight: "70px", 
-    }}
-  >
-    {job.description}
-  </Typography>
-</CardContent>
+                  <Typography
+                    variant="h6"
+                    color="primary"
+                    fontWeight={600}
+                    fontSize={{ xs: 18, sm: 20 }}
+                  >
+                    {job.title.length > 40
+                      ? job.title.slice(0, 40) + "..."
+                      : job.title}
+                  </Typography>
+                  <Typography color="textSecondary">
+                    Hours: {job.hours}
+                  </Typography>
+                  <Typography color="textSecondary">
+                    City: {job.city}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    mt={1}
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      minHeight: "70px",
+                    }}
+                  >
+                    {job.description}
+                  </Typography>
+                </CardContent>
 
                 <CardActions>
                   <Button
@@ -97,11 +129,14 @@ const EntityDashboard = () => {
                         theme.palette.mode === "dark" ? "#90caf9" : "#1976d2",
                       "&:hover": {
                         backgroundColor:
-                          theme.palette.mode === "dark" ? "#64b5f6" : "#115293",
+                          theme.palette.mode === "dark"
+                            ? "#64b5f6"
+                            : "#115293",
                       },
+                      width: "100%",
                     }}
                   >
-                    View Applications ({job.applications.length})
+                    View Applications ({job.applications?.length || 0})
                   </Button>
                 </CardActions>
               </Card>

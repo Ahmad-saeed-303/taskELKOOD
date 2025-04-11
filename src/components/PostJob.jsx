@@ -18,7 +18,7 @@ const PostJob = () => {
   const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
-  const [openSnackbar, setOpenSnackbar] = useState(false); 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     const jobs = localStorage.getItem("jobListings");
@@ -37,17 +37,18 @@ const PostJob = () => {
     };
     localStorage.setItem("jobListings", JSON.stringify([...currentJobs, newJob]));
     resetForm();
-    setOpenSnackbar(true); 
-    setTimeout(() => navigate("/entity-dashboard"), 1000); 
+    setOpenSnackbar(true);
+    setTimeout(() => navigate("/entity-dashboard"), 1000);
   };
 
   return (
     <Fade in timeout={600}>
       <Box
-        m="200px"
-        maxWidth="50%"
-        mx="auto"
         sx={{
+          mt: { xs: 12, sm: 10 , lg:15 },
+          px: { xs: 2, sm: 4, md: 8 },
+          width: { xs: "100%", sm: "90%", md: "70%", lg: "50%" },
+          mx: "auto",
           backgroundColor:
             theme.palette.mode === "dark"
               ? "rgba(255,255,255,0.04)"
@@ -55,16 +56,22 @@ const PostJob = () => {
           backdropFilter: "blur(10px)",
           borderRadius: "12px",
           boxShadow: 4,
-          p: 3,
+          py: 4,
         }}
       >
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ textAlign: "center", fontWeight: 600 }}
+          sx={{
+            textAlign: "center",
+            fontWeight: 600,
+            fontSize: { xs: "1.8rem", sm: "2.2rem" },
+            mb: 3,
+          }}
         >
           Post a New Job
         </Typography>
+
         <Formik
           initialValues={initialValues}
           validationSchema={jobSchema}
@@ -130,18 +137,18 @@ const PostJob = () => {
                   onChange={handleChange}
                   error={!!touched.description && !!errors.description}
                   helperText={touched.description && errors.description}
-                  sx={{ gridColumn: "span 2" }}
+                  sx={{ gridColumn: isNonMobile ? "span 2" : "span 1" }}
                 />
               </Box>
-              <Box display="flex" justifyContent="end" mt="20px">
+
+              <Box display="flex" justifyContent="flex-end" mt={3}>
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   sx={{
-                    mb: 3,
-                    px: 3,
-                    py: 1.2,
+                    px: 4,
+                    py: 1.3,
                     borderRadius: "12px",
                     fontWeight: 600,
                     backgroundColor:
@@ -162,7 +169,7 @@ const PostJob = () => {
           )}
         </Formik>
 
-        {/* ✅ Snackbar Notification */}
+        {/* Snackbar Notification */}
         <Snackbar
           open={openSnackbar}
           autoHideDuration={3000}

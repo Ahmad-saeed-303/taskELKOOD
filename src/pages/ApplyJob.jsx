@@ -5,13 +5,13 @@ import {
   TextField,
   Typography,
   Fade,
-  InputLabel,
-  IconButton,
   Tooltip,
+  IconButton,
   Paper,
   useTheme,
   Snackbar,
   Alert,
+  useMediaQuery,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -23,7 +23,8 @@ const ApplyJob = () => {
   const navigate = useNavigate();
   const [cvFile, setCvFile] = useState(null);
   const theme = useTheme();
-  const [openSnackbar, setOpenSnackbar] = useState(false); 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleFormSubmit = (values, { resetForm }) => {
     const jobs = JSON.parse(localStorage.getItem("jobListings")) || [];
@@ -43,24 +44,37 @@ const ApplyJob = () => {
     localStorage.setItem("jobListings", JSON.stringify(updatedJobs));
     resetForm();
     setCvFile(null);
-    setOpenSnackbar(true); 
-    setTimeout(() => navigate("/dashboard"), 1000); 
+    setOpenSnackbar(true);
+    setTimeout(() => navigate("/dashboard"), 1000);
   };
 
   return (
     <Fade in timeout={600}>
-      <Box m="100px" maxWidth="50%" mx="auto">
+      <Box
+        px={{ xs: 2, sm: 6 }}
+        py={{ xs: 6, sm: 10 }}
+        width={{ xs: "100%", sm: "80%", md: "60%" }}
+        mx="auto"
+        mt={{ xs: 12, sm: 10 , lg:15 }}
+      >
         <Paper
           elevation={4}
           sx={{
-            padding: 4,
+            padding: { xs: 3, sm: 4 },
             borderRadius: 3,
             backgroundColor: theme.palette.primary.main,
           }}
         >
-          <Typography variant="h4" gutterBottom color="secondary">
+          <Typography
+            variant="h4"
+            gutterBottom
+            color="secondary"
+            fontSize={{ xs: "1.8rem", sm: "2.2rem" }}
+            textAlign="center"
+          >
             Apply for Job
           </Typography>
+
           <Formik
             initialValues={initialValues}
             validationSchema={applySchema}
@@ -75,7 +89,7 @@ const ApplyJob = () => {
               handleSubmit,
             }) => (
               <form onSubmit={handleSubmit}>
-                <Box display="grid" gap="20px">
+                <Box display="grid" gap={3}>
                   <TextField
                     fullWidth
                     variant="outlined"
@@ -110,7 +124,12 @@ const ApplyJob = () => {
                     helperText={touched.email && errors.email}
                   />
 
-                  <Box display="flex" alignItems="center" gap="10px">
+                  <Box
+                    display="flex"
+                    flexDirection={isMobile ? "column" : "row"}
+                    alignItems={isMobile ? "flex-start" : "center"}
+                    gap={2}
+                  >
                     <Tooltip title="Upload your CV">
                       <IconButton
                         color="secondary"
@@ -118,7 +137,8 @@ const ApplyJob = () => {
                         sx={{
                           border: "1px solid",
                           borderRadius: 2,
-                          padding: "10px",
+                          padding: 1.2,
+                          width: "fit-content",
                         }}
                       >
                         <UploadFileIcon />
@@ -130,13 +150,16 @@ const ApplyJob = () => {
                         />
                       </IconButton>
                     </Tooltip>
-                    <Typography variant="body2">
+                    <Typography
+                      variant="body2"
+                      sx={{ wordBreak: "break-word" }}
+                    >
                       {cvFile ? cvFile.name : "No file selected"}
                     </Typography>
                   </Box>
                 </Box>
 
-                <Box display="flex" justifyContent="end" mt="30px">
+                <Box display="flex" justifyContent="flex-end" mt={4}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -149,6 +172,7 @@ const ApplyJob = () => {
                       borderRadius: 2,
                       boxShadow: 3,
                       textTransform: "none",
+                      width: isMobile ? "100%" : "auto",
                     }}
                   >
                     Submit Application
